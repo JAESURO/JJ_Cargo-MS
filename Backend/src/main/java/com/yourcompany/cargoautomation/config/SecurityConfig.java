@@ -23,8 +23,6 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
-            .cors()
-            .and()
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/auth/register", "/auth/login").permitAll()
                 .anyRequest().authenticated()
@@ -34,7 +32,6 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // CORS configuration to allow frontend requests
     @Bean
     public org.springframework.web.servlet.config.annotation.WebMvcConfigurer corsConfigurer() {
         return new org.springframework.web.servlet.config.annotation.WebMvcConfigurer() {

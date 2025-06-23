@@ -109,15 +109,12 @@ function updateDistanceField() {
 function updateLocationDropdowns() {
   const depId = shipmentDepartureLocationInput.value;
   const arrId = shipmentArrivalLocationInput.value;
-  // Enable all options first
   Array.from(shipmentDepartureLocationInput.options).forEach(opt => opt.disabled = false);
   Array.from(shipmentArrivalLocationInput.options).forEach(opt => opt.disabled = false);
-  // Disable selected arrival in departure dropdown
   if (arrId) {
     const depOpt = shipmentDepartureLocationInput.querySelector(`option[value='${arrId}']`);
     if (depOpt) depOpt.disabled = true;
   }
-  // Disable selected departure in arrival dropdown
   if (depId) {
     const arrOpt = shipmentArrivalLocationInput.querySelector(`option[value='${depId}']`);
     if (arrOpt) arrOpt.disabled = true;

@@ -1,12 +1,9 @@
-// Helper to get JWT token from localStorage
 function getToken() {
   return localStorage.getItem('jwtToken');
 }
 
-// API base URL
 const API_URL = 'http://localhost:8080/cargo';
 
-// DOM elements
 const cargoTableBody = document.querySelector('#cargo-table tbody');
 const cargoForm = document.getElementById('cargo-form');
 const cargoIdInput = document.getElementById('cargo-id');
@@ -16,7 +13,6 @@ const cargoCancelBtn = document.getElementById('cargo-cancel');
 const cargoCategoryInput = document.getElementById('cargo-category');
 const cargoWeightInput = document.getElementById('cargo-weight');
 
-// Fetch and display cargo list
 function loadCargo() {
   fetch(API_URL, {
     headers: { 'Authorization': 'Bearer ' + getToken() }
@@ -40,7 +36,6 @@ function loadCargo() {
     });
 }
 
-// Fetch and populate categories
 function loadCategories() {
   fetch('http://localhost:8080/category', {
     headers: { 'Authorization': 'Bearer ' + getToken() }
@@ -57,7 +52,6 @@ function loadCategories() {
     });
 }
 
-// Add or update cargo
 cargoForm.onsubmit = function(e) {
   e.preventDefault();
   const id = cargoIdInput.value;
@@ -83,7 +77,6 @@ cargoForm.onsubmit = function(e) {
     });
 };
 
-// Edit cargo
 window.editCargo = function(id, name, description) {
   cargoIdInput.value = id;
   cargoNameInput.value = name;
@@ -91,14 +84,12 @@ window.editCargo = function(id, name, description) {
   cargoCancelBtn.style.display = 'inline-block';
 };
 
-// Cancel edit
 cargoCancelBtn.onclick = function() {
   cargoForm.reset();
   cargoIdInput.value = '';
   cargoCancelBtn.style.display = 'none';
 };
 
-// Delete cargo
 window.deleteCargo = function(id) {
   if (confirm('Delete this cargo?')) {
     fetch(`${API_URL}/${id}`, {
@@ -109,6 +100,5 @@ window.deleteCargo = function(id) {
   }
 };
 
-// Initial load
 loadCategories();
 loadCargo(); 
