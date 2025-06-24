@@ -1,7 +1,3 @@
-function getToken() {
-  return localStorage.getItem('jwtToken');
-}
-
 const API_URL = 'http://localhost:8080/cargo';
 
 const cargoTableBody = document.querySelector('#cargo-table tbody');
@@ -15,10 +11,11 @@ const cargoWeightInput = document.getElementById('cargo-weight');
 
 function loadCargo() {
   fetch(API_URL, {
-    headers: { 'Authorization': 'Bearer ' + getToken() }
+    headers: getAuthHeaders()
   })
-    .then(res => res.json())
+    .then(handleApiResponse)
     .then(data => {
+      if (!data) return;
       cargoTableBody.innerHTML = '';
       data.forEach(cargo => {
         const row = document.createElement('tr');
@@ -38,10 +35,11 @@ function loadCargo() {
 
 function loadCategories() {
   fetch('http://localhost:8080/category', {
-    headers: { 'Authorization': 'Bearer ' + getToken() }
+    headers: getAuthHeaders()
   })
-    .then(res => res.json())
+    .then(handleApiResponse)
     .then(data => {
+      if (!data) return;
       cargoCategoryInput.innerHTML = '';
       data.forEach(category => {
         const option = document.createElement('option');
@@ -59,21 +57,21 @@ cargoForm.onsubmit = function(e) {
   const url = id ? `${API_URL}/${id}` : API_URL;
   fetch(url, {
     method,
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + getToken()
-    },
+    headers: getAuthHeadersWithContent(),
     body: JSON.stringify({
       name: cargoNameInput.value,
       categoryId: Number(cargoCategoryInput.value),
       weight: Number(cargoWeightInput.value)
     })
   })
-    .then(() => {
-      loadCargo();
-      cargoForm.reset();
-      cargoIdInput.value = '';
-      cargoCancelBtn.style.display = 'none';
+    .then(handleApiResponse)
+    .then(data => {
+      if (data !== null) {
+        loadCargo();
+        cargoForm.reset();
+        cargoIdInput.value = '';
+        cargoCancelBtn.style.display = 'none';
+      }
     });
 };
 
@@ -94,9 +92,14 @@ window.deleteCargo = function(id) {
   if (confirm('Delete this cargo?')) {
     fetch(`${API_URL}/${id}`, {
       method: 'DELETE',
-      headers: { 'Authorization': 'Bearer ' + getToken() }
+      headers: getAuthHeaders()
     })
-      .then(() => loadCargo());
+      .then(handleApiResponse)
+      .then(data => {
+        if (data !== null) {
+          loadCargo();
+        }
+      });
   }
 };
 

@@ -31,7 +31,6 @@ public class Shipment {
     private String status;
     private LocalDateTime departureTime;
     private LocalDateTime arrivalTime;
-    private String weather;
     private Double distance;
     private Boolean success;
 

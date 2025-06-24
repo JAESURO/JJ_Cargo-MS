@@ -1,6 +1,30 @@
 const loginForm = document.getElementById('login-form');
 const loginError = document.getElementById('login-error');
 
+function isTokenExpired(token) {
+  if (!token) return true;
+  
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    const currentTime = Math.floor(Date.now() / 1000);
+    return payload.exp < currentTime;
+  } catch (error) {
+    return true;
+  }
+}
+
+function checkTokenAndRedirect() {
+  const token = localStorage.getItem('jwtToken');
+  if (isTokenExpired(token)) {
+    localStorage.removeItem('jwtToken');
+    if (window.location.pathname !== '/login.html' && window.location.pathname !== '/register.html') {
+      window.location.href = 'login.html';
+    }
+  }
+}
+
+checkTokenAndRedirect();
+
 loginForm.onsubmit = function(e) {
   e.preventDefault();
   fetch('http://localhost:8080/auth/login', {

@@ -25,6 +25,6 @@ public class MapsService {
             .getJSONObject(0)
             .getJSONObject("distance")
             .getDouble("value");
-        return distance / 1000.0; // return distance in kilometers
+        return distance / 1000.0;
     }
 }

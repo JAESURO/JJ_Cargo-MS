@@ -1,6 +1,3 @@
-function getToken() {
-  return localStorage.getItem('jwtToken');
-}
 const API_URL = 'http://localhost:8080/shipment';
 const shipmentTableBody = document.querySelector('#shipment-table tbody');
 const shipmentForm = document.getElementById('shipment-form');
@@ -11,7 +8,6 @@ const shipmentArrivalLocationInput = document.getElementById('shipment-arrival-l
 const shipmentStatusInput = document.getElementById('shipment-status');
 const shipmentDepartureTimeInput = document.getElementById('shipment-departure-time');
 const shipmentArrivalTimeInput = document.getElementById('shipment-arrival-time');
-const shipmentWeatherInput = document.getElementById('shipment-weather');
 const shipmentDistanceInput = document.getElementById('shipment-distance');
 const shipmentSuccessInput = document.getElementById('shipment-success');
 
@@ -19,10 +15,11 @@ let locationsCache = [];
 
 function loadShipments() {
   fetch(API_URL, {
-    headers: { 'Authorization': 'Bearer ' + getToken() }
+    headers: getAuthHeaders()
   })
-    .then(res => res.json())
+    .then(handleApiResponse)
     .then(data => {
+      if (!data) return;
       shipmentTableBody.innerHTML = '';
       data.forEach(shipment => {
         const row = document.createElement('tr');
@@ -45,10 +42,11 @@ function loadShipments() {
 
 function loadCargos() {
   fetch('http://localhost:8080/cargo', {
-    headers: { 'Authorization': 'Bearer ' + getToken() }
+    headers: getAuthHeaders()
   })
-    .then(res => res.json())
+    .then(handleApiResponse)
     .then(data => {
+      if (!data) return;
       shipmentCargoInput.innerHTML = '';
       data.forEach(cargo => {
         const option = document.createElement('option');
@@ -61,10 +59,11 @@ function loadCargos() {
 
 function loadLocations() {
   fetch('http://localhost:8080/location', {
-    headers: { 'Authorization': 'Bearer ' + getToken() }
+    headers: getAuthHeaders()
   })
-    .then(res => res.json())
+    .then(handleApiResponse)
     .then(data => {
+      if (!data) return;
       locationsCache = data;
       shipmentDepartureLocationInput.innerHTML = '';
       shipmentArrivalLocationInput.innerHTML = '';
@@ -134,10 +133,7 @@ shipmentForm.onsubmit = function(e) {
   e.preventDefault();
   fetch(API_URL, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + getToken()
-    },
+    headers: getAuthHeadersWithContent(),
     body: JSON.stringify({
       name: shipmentNameInput.value,
       cargo: { id: Number(shipmentCargoInput.value) },
@@ -150,13 +146,15 @@ shipmentForm.onsubmit = function(e) {
       success: shipmentSuccessInput.value === 'true'
     })
   })
-    .then(() => {
-      loadShipments();
-      shipmentForm.reset();
+    .then(handleApiResponse)
+    .then(data => {
+      if (data !== null) {
+        loadShipments();
+        shipmentForm.reset();
+      }
     });
 };
 
-// Initial load
 loadCargos();
 loadLocations();
 loadShipments(); 

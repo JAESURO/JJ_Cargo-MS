@@ -1,6 +1,3 @@
-function getToken() {
-  return localStorage.getItem('jwtToken');
-}
 const API_URL = 'http://localhost:8080/category';
 const categoryTableBody = document.querySelector('#category-table tbody');
 const categoryForm = document.getElementById('category-form');
@@ -8,10 +5,11 @@ const categoryNameInput = document.getElementById('category-name');
 
 function loadCategories() {
   fetch(API_URL, {
-    headers: { 'Authorization': 'Bearer ' + getToken() }
+    headers: getAuthHeaders()
   })
-    .then(res => res.json())
+    .then(handleApiResponse)
     .then(data => {
+      if (!data) return;
       categoryTableBody.innerHTML = '';
       data.forEach(category => {
         const row = document.createElement('tr');
@@ -28,15 +26,15 @@ categoryForm.onsubmit = function(e) {
   e.preventDefault();
   fetch(API_URL, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + getToken()
-    },
+    headers: getAuthHeadersWithContent(),
     body: JSON.stringify({ name: categoryNameInput.value })
   })
-    .then(() => {
-      loadCategories();
-      categoryForm.reset();
+    .then(handleApiResponse)
+    .then(data => {
+      if (data !== null) {
+        loadCategories();
+        categoryForm.reset();
+      }
     });
 };
 

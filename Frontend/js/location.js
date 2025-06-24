@@ -1,6 +1,3 @@
-function getToken() {
-  return localStorage.getItem('jwtToken');
-}
 const API_URL = 'http://localhost:8080/location';
 const locationTableBody = document.querySelector('#location-table tbody');
 const locationForm = document.getElementById('location-form');
@@ -13,10 +10,11 @@ locationTableBody.parentElement.parentElement.appendChild(locationMessage);
 
 function loadLocations() {
   fetch(API_URL, {
-    headers: { 'Authorization': 'Bearer ' + getToken() }
+    headers: getAuthHeaders()
   })
-    .then(res => res.json())
+    .then(handleApiResponse)
     .then(data => {
+      if (!data) return;
       locationTableBody.innerHTML = '';
       if (data.length === 0) {
         locationMessage.textContent = 'No locations found for your account.';
@@ -58,19 +56,19 @@ locationForm.onsubmit = function(e) {
   e.preventDefault();
   fetch(API_URL, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + getToken()
-    },
+    headers: getAuthHeadersWithContent(),
     body: JSON.stringify({
       name: locationNameInput.value,
       latitude: Number(locationLatitudeInput.value),
       longitude: Number(locationLongitudeInput.value)
     })
   })
-    .then(() => {
-      loadLocations();
-      locationForm.reset();
+    .then(handleApiResponse)
+    .then(data => {
+      if (data !== null) {
+        loadLocations();
+        locationForm.reset();
+      }
     });
 };
 

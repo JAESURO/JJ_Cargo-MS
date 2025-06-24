@@ -11,12 +11,12 @@ registerForm.onsubmit = function(e) {
       password: document.getElementById('password').value
     })
   })
-    .then(res => res.text())
-    .then(msg => {
-      if (msg.includes('successful')) {
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
         window.location.href = 'login.html';
       } else {
-        registerError.textContent = msg;
+        registerError.textContent = data.error || 'Registration failed.';
       }
     });
 }; 

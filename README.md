@@ -9,6 +9,10 @@ Cargo Automation is a full-stack web application for managing cargo, categories,
 - **Framework:** Spring Boot (Java)
 - **Database:** PostgreSQL (configurable)
 - **Security:** JWT-based authentication, user-specific data access
+- **JWT Configuration:**
+  - Token expiration: 30 days (configurable in `JwtUtil.java`)
+  - Secure token validation and user authentication
+  - Automatic token expiration handling
 - **RESTful API Endpoints:**
   - **User Authentication:**
     - `POST /auth/register` — Register a new user
@@ -39,14 +43,43 @@ Cargo Automation is a full-stack web application for managing cargo, categories,
   - Dashboard (index.html)
   - Cargo, Category, Location, Shipment management
   - Login & Register
-- **Features:**
+- **Authentication & Token Management:**
   - JWT authentication (login/register)
+  - Automatic token expiration detection
+  - Automatic redirect to login when token expires
+  - Centralized token handling via `auth.js`
+  - Logout functionality with token cleanup
+- **Features:**
   - CRUD for all main entities
   - Google Maps integration for picking location coordinates
   - Distance Matrix API for auto-filling shipment distances
   - User-specific data views
   - Responsive, Bootstrap-styled UI
   - Error and empty-state handling (e.g., "No locations found for your account.")
+  - 401 error handling with automatic logout
+
+---
+
+## JWT Token Management
+The application includes robust JWT token management to handle token expiration gracefully:
+
+### Backend Improvements:
+- **Extended Token Lifetime:** JWT tokens now expire after 30 days instead of 10 hours
+- **Proper Error Handling:** Clear error messages for expired tokens
+
+### Frontend Improvements:
+- **Token Expiration Detection:** Automatic checking of token expiration on page load
+- **Automatic Redirect:** Users are automatically redirected to login when tokens expire
+- **Centralized Auth Logic:** All authentication logic is centralized in `auth.js`
+- **401 Error Handling:** API calls automatically handle 401 responses and redirect to login
+- **Logout Functionality:** Added logout button to all pages for manual token cleanup
+
+### Files Modified:
+- `Backend/src/main/java/com/yourcompany/cargoautomation/config/JwtUtil.java` - Extended token lifetime
+- `Frontend/js/auth.js` - New centralized authentication utilities
+- `Frontend/js/logout.js` - New logout functionality
+- All frontend JavaScript files updated to use centralized auth functions
+- All HTML files updated to include auth.js and logout.js
 
 ---
 
@@ -66,6 +99,10 @@ Cargo Automation is a full-stack web application for managing cargo, categories,
    - Ensure the API key is injected at build/deploy time.
 3. **Login/Register:**
    - Register a user, log in, and manage your cargo, locations, categories, and shipments.
+4. **Token Management:**
+   - Tokens automatically expire after 30 days
+   - Users are automatically redirected to login when tokens expire
+   - Use the logout button to manually clear tokens
 
 ---
 
