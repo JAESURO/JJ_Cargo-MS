@@ -28,6 +28,15 @@ public class CategoryController {
         return categoryRepository.findByUser(user);
     }
 
+    @DeleteMapping("/{id}")
+    public void deleteCategory(@PathVariable Long id) {
+        User user = getAuthenticatedUser();
+        Category category = categoryRepository.findById(id).orElse(null);
+        if (category != null && category.getUser().getId().equals(user.getId())) {
+            categoryRepository.deleteById(id);
+        }
+    }
+
     private User getAuthenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return (User) authentication.getPrincipal();

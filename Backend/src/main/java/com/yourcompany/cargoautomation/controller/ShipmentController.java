@@ -29,6 +29,15 @@ public class ShipmentController {
         return shipmentRepository.findByUser(user).stream().map(this::toDTO).toList();
     }
 
+    @DeleteMapping("/{id}")
+    public void deleteShipment(@PathVariable Long id) {
+        User user = getAuthenticatedUser();
+        Shipment shipment = shipmentRepository.findById(id).orElse(null);
+        if (shipment != null && shipment.getUser().getId().equals(user.getId())) {
+            shipmentRepository.deleteById(id);
+        }
+    }
+
     private User getAuthenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return (User) authentication.getPrincipal();

@@ -28,6 +28,15 @@ public class LocationController {
         return locationRepository.findByUser(user);
     }
 
+    @DeleteMapping("/{id}")
+    public void deleteLocation(@PathVariable Long id) {
+        User user = getAuthenticatedUser();
+        Location location = locationRepository.findById(id).orElse(null);
+        if (location != null && location.getUser().getId().equals(user.getId())) {
+            locationRepository.deleteById(id);
+        }
+    }
+
     private User getAuthenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return (User) authentication.getPrincipal();
