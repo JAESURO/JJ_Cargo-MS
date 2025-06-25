@@ -1,0 +1,11 @@
+{
+  "name": "cargo-automation",
+  "version": "1.0.0",
+  "description": "Cargo Automation System",
+  "scripts": {
+    "build": "echo 'Static site - no build required'"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+} 
