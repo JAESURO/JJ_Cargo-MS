@@ -1,6 +1,4 @@
-// Wait for both DOM and config.js to load
 function initRegister() {
-  // Check if config is loaded
   if (typeof API_ENDPOINTS === 'undefined') {
     console.error('API_ENDPOINTS not found. Make sure config.js is loaded.');
     return;
@@ -24,34 +22,55 @@ function initRegister() {
       registerError.textContent = 'Please fill in all fields.';
       return;
     }
+
+    registerError.textContent = 'Registering...';
+    
+    console.log('Attempting to register with URL:', API_ENDPOINTS.AUTH.REGISTER);
     
     fetch(API_ENDPOINTS.AUTH.REGISTER, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
       body: JSON.stringify({
         username: username,
         password: password
       })
     })
-      .then(res => res.text())
+      .then(response => {
+        console.log('Response status:', response.status);
+        console.log('Response headers:', response.headers);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.text();
+      })
       .then(data => {
+        console.log('Response data:', data);
         if (data.includes('successful')) {
-          window.location.href = 'login.html';
+          registerError.textContent = 'Registration successful! Redirecting...';
+          setTimeout(() => {
+            window.location.href = 'login.html';
+          }, 1000);
         } else {
           registerError.textContent = data || 'Registration failed.';
         }
       })
       .catch(error => {
         console.error('Registration error:', error);
-        registerError.textContent = 'Registration failed. Please try again.';
+        if (error.name === 'TypeError' && error.message.includes('NetworkError')) {
+          registerError.textContent = 'Network error: Cannot connect to server. Please check your internet connection and try again.';
+        } else {
+          registerError.textContent = 'Registration failed. Please try again. Error: ' + error.message;
+        }
       });
   });
 }
 
-// Try to initialize immediately if DOM is ready
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initRegister);
 } else {
-  // DOM is already loaded, wait a bit for config.js
   setTimeout(initRegister, 100);
 } 
