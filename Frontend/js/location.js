@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:8080/location';
+const API_URL = API_ENDPOINTS.LOCATION;
 const locationTableBody = document.querySelector('#location-table tbody');
 const locationForm = document.getElementById('location-form');
 const locationNameInput = document.getElementById('location-name');

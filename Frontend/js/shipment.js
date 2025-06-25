@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:8080/shipment';
+const API_URL = API_ENDPOINTS.SHIPMENT;
 const shipmentTableBody = document.querySelector('#shipment-table tbody');
 const shipmentForm = document.getElementById('shipment-form');
 const shipmentNameInput = document.getElementById('shipment-name');
@@ -41,7 +41,7 @@ function loadShipments() {
 }
 
 function loadCargos() {
-  fetch('http://localhost:8080/cargo', {
+  fetch(API_ENDPOINTS.CARGO, {
     headers: getAuthHeaders()
   })
     .then(handleApiResponse)
@@ -58,7 +58,7 @@ function loadCargos() {
 }
 
 function loadLocations() {
-  fetch('http://localhost:8080/location', {
+  fetch(API_ENDPOINTS.LOCATION, {
     headers: getAuthHeaders()
   })
     .then(handleApiResponse)

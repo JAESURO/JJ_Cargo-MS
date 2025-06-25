@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:8080/category';
+const API_URL = API_ENDPOINTS.CATEGORY;
 const categoryTableBody = document.querySelector('#category-table tbody');
 const categoryForm = document.getElementById('category-form');
 const categoryNameInput = document.getElementById('category-name');

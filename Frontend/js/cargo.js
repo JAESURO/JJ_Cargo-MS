@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:8080/cargo';
+const API_URL = API_ENDPOINTS.CARGO;
 
 const cargoTableBody = document.querySelector('#cargo-table tbody');
 const cargoForm = document.getElementById('cargo-form');
@@ -34,7 +34,7 @@ function loadCargo() {
 }
 
 function loadCategories() {
-  fetch('http://localhost:8080/category', {
+  fetch(API_ENDPOINTS.CATEGORY, {
     headers: getAuthHeaders()
   })
     .then(handleApiResponse)

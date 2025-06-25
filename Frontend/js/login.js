@@ -25,14 +25,18 @@ function checkTokenAndRedirect() {
 
 checkTokenAndRedirect();
 
-loginForm.onsubmit = function(e) {
+document.getElementById('loginForm').addEventListener('submit', function(e) {
   e.preventDefault();
-  fetch('http://localhost:8080/auth/login', {
+  
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+  
+  fetch(API_ENDPOINTS.AUTH.LOGIN, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      username: document.getElementById('username').value,
-      password: document.getElementById('password').value
+      username: email,
+      password: password
     })
   })
     .then(res => res.json())
@@ -44,4 +48,4 @@ loginForm.onsubmit = function(e) {
         loginError.textContent = data.error || 'Login failed.';
       }
     });
-}; 
+}); 
