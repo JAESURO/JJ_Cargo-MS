@@ -26,9 +26,9 @@ function loadShipments() {
         row.innerHTML = `
           <td>${shipment.id}</td>
           <td>${shipment.name || ''}</td>
-          <td>${shipment.cargo && shipment.cargo.name ? shipment.cargo.name : ''}</td>
-          <td>${shipment.departureLocation && shipment.departureLocation.name ? shipment.departureLocation.name : ''}</td>
-          <td>${shipment.arrivalLocation && shipment.arrivalLocation.name ? shipment.arrivalLocation.name : ''}</td>
+          <td>${shipment.cargoName || ''}</td>
+          <td>${shipment.departureLocationName || ''}</td>
+          <td>${shipment.arrivalLocationName || ''}</td>
           <td>${shipment.status || ''}</td>
           <td>${shipment.departureTime ? new Date(shipment.departureTime).toLocaleString() : ''}</td>
           <td>${shipment.arrivalTime ? new Date(shipment.arrivalTime).toLocaleString() : ''}</td>
@@ -93,15 +93,28 @@ function updateDistanceField() {
   const dep = getLatLngById(depId);
   const arr = getLatLngById(arrId);
   if (!dep || !arr) return;
-  const apiKey = 'AIzaSyA8bcRXARx-ENtEqu1UG6xTt4Jo5EhkXjg';
-  const url = `https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=${dep.lat},${dep.lng}&destinations=${arr.lat},${arr.lng}&key=${apiKey}`;
-  fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`)
-    .then(res => res.json())
+  
+  fetch(`${API_ENDPOINTS.MAPS}/distance?lat1=${dep.lat}&lon1=${dep.lng}&lat2=${arr.lat}&lon2=${arr.lng}`, {
+    headers: getAuthHeaders()
+  })
+    .then(handleApiResponse)
     .then(data => {
-      if (data.rows && data.rows[0] && data.rows[0].elements && data.rows[0].elements[0].distance) {
-        const km = data.rows[0].elements[0].distance.value / 1000;
-        shipmentDistanceInput.value = km;
+      if (data && data.success && data.distance) {
+        shipmentDistanceInput.value = data.distance;
       }
+    })
+    .catch(() => {
+      // Fallback to direct Google Maps API if backend fails
+      const apiKey = 'AIzaSyA8bcRXARx-ENtEqu1UG6xTt4Jo5EhkXjg';
+      const url = `https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=${dep.lat},${dep.lng}&destinations=${arr.lat},${arr.lng}&key=${apiKey}`;
+      fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.rows && data.rows[0] && data.rows[0].elements && data.rows[0].elements[0].distance) {
+            const km = data.rows[0].elements[0].distance.value / 1000;
+            shipmentDistanceInput.value = km;
+          }
+        });
     });
 }
 

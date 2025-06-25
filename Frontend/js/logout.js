@@ -1,6 +1,16 @@
 function logout() {
-  localStorage.removeItem('jwtToken');
-  window.location.href = 'login.html';
+  fetch(API_ENDPOINTS.AUTH.LOGOUT, {
+    method: 'POST',
+    headers: getAuthHeaders()
+  })
+  .then(() => {
+    localStorage.removeItem('jwtToken');
+    window.location.href = 'login.html';
+  })
+  .catch(() => {
+    localStorage.removeItem('jwtToken');
+    window.location.href = 'login.html';
+  });
 }
 
 document.addEventListener('DOMContentLoaded', function() {

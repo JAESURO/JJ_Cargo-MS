@@ -4,14 +4,14 @@ const registerError = document.getElementById('register-error');
 document.getElementById('registerForm').addEventListener('submit', function(e) {
   e.preventDefault();
   
-  const email = document.getElementById('email').value;
+  const username = document.getElementById('username').value;
   const password = document.getElementById('password').value;
   
   fetch(API_ENDPOINTS.AUTH.REGISTER, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      username: email,
+      username: username,
       password: password
     })
   })

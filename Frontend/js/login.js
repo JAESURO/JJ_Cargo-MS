@@ -28,14 +28,14 @@ checkTokenAndRedirect();
 document.getElementById('loginForm').addEventListener('submit', function(e) {
   e.preventDefault();
   
-  const email = document.getElementById('email').value;
+  const username = document.getElementById('username').value;
   const password = document.getElementById('password').value;
   
   fetch(API_ENDPOINTS.AUTH.LOGIN, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      username: email,
+      username: username,
       password: password
     })
   })

@@ -42,4 +42,11 @@ public class UserController {
         response.put("error", "Invalid username or password!");
         return response;
     }
+
+    @PostMapping("/logout")
+    public Map<String, String> logout() {
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Logout successful!");
+        return response;
+    }
 } 
