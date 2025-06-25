@@ -1,6 +1,18 @@
-document.addEventListener('DOMContentLoaded', function() {
+// Wait for both DOM and config.js to load
+function initLogin() {
+  // Check if config is loaded
+  if (typeof API_ENDPOINTS === 'undefined') {
+    console.error('API_ENDPOINTS not found. Make sure config.js is loaded.');
+    return;
+  }
+
   const loginForm = document.getElementById('login-form');
   const loginError = document.getElementById('login-error');
+
+  if (!loginForm) {
+    console.error('Login form not found');
+    return;
+  }
 
   function isTokenExpired(token) {
     if (!token) return true;
@@ -26,11 +38,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
   checkTokenAndRedirect();
 
-  document.getElementById('loginForm').addEventListener('submit', function(e) {
+  loginForm.addEventListener('submit', function(e) {
     e.preventDefault();
     
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
+    
+    if (!username || !password) {
+      loginError.textContent = 'Please fill in all fields.';
+      return;
+    }
     
     fetch(API_ENDPOINTS.AUTH.LOGIN, {
       method: 'POST',
@@ -50,7 +67,16 @@ document.addEventListener('DOMContentLoaded', function() {
         }
       })
       .catch(error => {
-        loginError.textContent = 'Login failed.';
+        console.error('Login error:', error);
+        loginError.textContent = 'Login failed. Please try again.';
       });
   });
-}); 
+}
+
+// Try to initialize immediately if DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initLogin);
+} else {
+  // DOM is already loaded, wait a bit for config.js
+  setTimeout(initLogin, 100);
+} 
