@@ -57,36 +57,21 @@ Cargo Automation is a full-stack web application for managing cargo, categories,
   - Responsive, Bootstrap-styled UI
   - Error and empty-state handling (e.g., "No locations found for your account.")
   - 401 error handling with automatic logout
-
----
-
-## JWT Token Management
-The application includes robust JWT token management to handle token expiration gracefully:
-
-### Backend Improvements:
-- **Extended Token Lifetime:** JWT tokens now expire after 30 days instead of 10 hours
-- **Proper Error Handling:** Clear error messages for expired tokens
-
-### Frontend Improvements:
-- **Token Expiration Detection:** Automatic checking of token expiration on page load
-- **Automatic Redirect:** Users are automatically redirected to login when tokens expire
-- **Centralized Auth Logic:** All authentication logic is centralized in `auth.js`
-- **401 Error Handling:** API calls automatically handle 401 responses and redirect to login
-- **Logout Functionality:** Added logout button to all pages for manual token cleanup
-
-### Files Modified:
-- `Backend/src/main/java/com/yourcompany/cargoautomation/config/JwtUtil.java` - Extended token lifetime
-- `Frontend/js/auth.js` - New centralized authentication utilities
-- `Frontend/js/logout.js` - New logout functionality
-- All frontend JavaScript files updated to use centralized auth functions
-- All HTML files updated to include auth.js and logout.js
+  - Backend availability checking with user warnings
+  - Improved loading states and error messages
+- **JavaScript Improvements:**
+  - Centralized configuration management (`config.js`)
+  - Robust initialization handling for DOM and config loading
+  - Better error handling and user feedback
+  - Backend connectivity checks with user notifications
 
 ---
 
 ## Deployment & Security
 - **API keys and sensitive data are never committed.**
-- Google Maps API key is injected at deploy time using environment variables and a placeholder in `location.html`.
-- See deployment instructions in project comments and Render setup.
+- Google Maps API key is injected at deploy time using environment variables.
+- Backend includes Dockerfile for containerized deployment
+- Frontend can be deployed as a static site on Render platform.
 
 ---
 
@@ -97,12 +82,29 @@ The application includes robust JWT token management to handle token expiration 
 2. **Frontend:**
    - Serve with a static server (e.g., Python, Node, or Render static site).
    - Ensure the API key is injected at build/deploy time.
+   - Backend availability will be automatically checked on page load.
 3. **Login/Register:**
    - Register a user, log in, and manage your cargo, locations, categories, and shipments.
 4. **Token Management:**
    - Tokens automatically expire after 30 days
    - Users are automatically redirected to login when tokens expire
    - Use the logout button to manually clear tokens
+   - Backend connectivity issues are automatically detected and reported
+
+---
+
+## Recent Updates
+- **Frontend JavaScript Improvements:**
+  - Streamlined initialization process for all pages
+  - Better error handling and user feedback
+  - Centralized configuration management
+  - Backend availability checking with user notifications
+  - Improved loading states and error messages
+- **User Experience Enhancements:**
+  - Automatic backend connectivity checks
+  - Better error messages for network issues
+  - Improved form validation and feedback
+  - Enhanced empty state handling
 
 ---
 
